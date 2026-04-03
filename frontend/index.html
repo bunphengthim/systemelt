@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ប្រព័ន្ធតាមដានការជួសជុល - ELYTHONG</title>
+<link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">ELYTHONG</div>
+    <div class="login-sub">ប្រព័ន្ធតាមដានការជួសជុលគ្រឿងចក្រ</div>
+    <div class="fg">
+      <label>Username</label>
+      <input type="text" id="lg-user" placeholder="Username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="fg">
+      <label>Password</label>
+      <input type="password" id="lg-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-err" id="lg-err"></div>
+    <button class="login-btn" onclick="doLogin()">🔐 ចូលប្រើប្រាស់</button>
+  </div>
+</div>
+
+<div style="max-width:1020px;margin:0 auto">
+
+<div class="app-header">
+  <div class="logo">ELYTHONG</div>
+  <h1>ប្រព័ន្ធតាមដានការជួសជុលគ្រឿងចក្រ</h1>
+  <div class="badge-num" id="hdrNum">លេខ: —</div>
+</div>
+
+<div class="main-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('t1')">📋​ ប័ណ្ណស្នើរការជួសជុល</button>
+    <button class="tab-btn" onclick="showTab('t2')">📂 ប័ណ្ណស្នើរកំពុងជួសជុល <span class="cnt" id="cnt-pending">0</span></button>
+    <button class="tab-btn" onclick="showTab('t3')">✅​ ប័ណ្ណស្នើរជួសជុលរួចរាល់ <span class="cnt" id="cnt-done" style="background:#1e8449">0</span></button>
+    <button class="tab-btn" onclick="showTab('t4')">📊 របាយការណ៍ប្រចាំខែ</button>
+  </div>
+
+  <!-- ===== TAB 1: FORM ===== -->
+  <div id="tab-t1" class="tab-content active">
+    <div class="receipt-meta">
+      <span>លេខប័ណ្ណ:</span>
+      <div class="receipt-num" id="receiptDisplay">000001</div>
+      <button class="btn btn-outline" onclick="genReceipt()" style="padding:4px 10px;font-size:15px">🔄 បន្ថែមប័ណ្ណថ្មី</button>
+    </div>
+    <div class="sec-title">ព័ត៌មានទូទៅ</div>
+    <div class="form-grid">
+      <div class="fg"><label>ថ្ងៃខែឆ្នាំ</label><input type="date" id="f_date"></div>
+      <div class="fg"><label>ប្រភេទគ្រឿងចក្រ</label>
+        <input type="text" id="f_type" placeholder="ឧ.​ VOLVO SDLG KOBELCO ....">
+      </div>
+      <div class="fg"><label>លេខកូតគ្រឿងចក្រ</label><input type="text" id="f_code" placeholder="ឧ. DT015"></div>
+      <div class="fg"><label>ឈ្មោះអ្នកស្នើរ</label><input type="text" id="f_requester" placeholder="ឈ្មោះពេញ"></div>
+      <div class="fg"><label>លេខទូរស័ព្ទ</label><input type="tel" id="f_phone" placeholder="0xx-xxx-xxx"></div>
+      <div class="fg"><label>ទីតាំងការងារ</label><input type="text" id="f_location" placeholder="ឧ. ស្ពានទី៨..."></div>
+      <div class="fg full"><label>ការពិពណ៌នាបញ្ហា</label><textarea id="f_desc" rows="2" placeholder="ពណ៌នា បញ្ហា ឬ ការខូចខាត..."></textarea></div>
+      <div class="fg"><label>ថ្ងៃស្នើរជួសជុល</label><input type="date" id="f_req_date"></div>
+      <div class="fg"><label>ចំណាំ</label><input type="text" id="f_note" placeholder="..."></div>
+    </div>
+    <div class="sec-title">ការអនុម័ត</div>
+    <div class="sig-outer">
+      <table>
+        <thead><tr>
+          <th style="width:70px"></th>
+          <th>ស្នើរការងារដោយ</th><th>ឯកភាពដោយ</th>
+          <th>ពិនិត្យ​ និង សម្រេចដោយ</th><th>បញ្ជាក់ការងារដោយ</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="sig-row-lbl">ឈ្មោះពេញ</td>
+            <td><input type="text" id="s_agent_req" placeholder="ឈ្មោះពេញ"></td>
+            <td><input type="text" id="s_agent_appr" placeholder="ឈ្មោះពេញ"></td>
+            <td><input type="text" id="s_agent_legal" placeholder="ឈ្មោះពេញ"></td>
+            <td><input type="text" id="s_agent_conf" placeholder="ឈ្មោះពេញ"></td>
+          </tr>
+          <tr>
+            <td class="sig-row-lbl">តួនាទី</td>
+            <td><input type="text" id="s_base_req" placeholder="តួនាទី"></td>
+            <td><input type="text" id="s_base_appr" placeholder="តួនាទី"></td>
+            <td><input type="text" id="s_base_legal" placeholder="តួនាទី"></td>
+            <td><input type="text" id="s_base_conf" placeholder="តួនាទី"></td>
+          </tr>
+          <tr>
+            <td class="sig-row-lbl">ហត្ថលេខា</td>
+            <td style="height:50px"><input type="text" id="s_sign_req"></td>
+            <td><input type="text" id="s_sign_appr"></td>
+            <td><input type="text" id="s_sign_legal"></td>
+            <td><input type="text" id="s_sign_conf"></td>
+          </tr>
+          <tr>
+            <td class="sig-row-lbl">ថ្ងៃខែឆ្នាំ</td>
+            <td><input type="date" id="s_date_req"></td>
+            <td><input type="date" id="s_date_appr"></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="action-bar">
+      <button class="btn btn-outline" onclick="clearForm()">🗑 លុបទម្រង់</button>
+      <button class="btn btn-warning" onclick="printCurrentForm()">🖨 បោះពុម្ព</button>
+      <button class="btn btn-success" onclick="saveRequest()">💾 បញ្ជូនស្នើរ</button>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: PENDING LIST ===== -->
+  <div id="tab-t2" class="tab-content">
+    <div class="search-bar">
+      <input type="text" id="t2-search" placeholder="🔍 ស្វែងរកតាមឈ្មោះ, លេខ, ប្រភេទ..." oninput="renderT2()">
+      <select id="t2-filter" onchange="renderT2()">
+        <option value="">-- ស្ថានភាពទាំងអស់ --</option>
+        <option value="pending">រង់ចាំ</option>
+        <option value="progress">កំពុងដំណើរការ</option>
+      </select>
+      <button class="btn btn-primary" onclick="showTab('t1')">+ ស្នើរថ្មី</button>
+    </div>
+    <div class="rtbl-wrap">
+      <table class="rtbl">
+        <thead><tr>
+          <th>លេខ</th><th>ថ្ងៃស្នើរ</th><th>ប្រភេទគ្រឿងចក្រ</th><th>លេខសម្គាល់</th>
+          <th>អ្នកស្នើរ</th><th>ទូរស័ព្ទ</th><th>ទីតាំង</th>
+          <th>ស្ថានភាព</th><th>សកម្មភាព</th>
+        </tr></thead>
+        <tbody id="t2-body"></tbody>
+      </table>
+      <div id="t2-empty" class="no-data" style="display:none">⚙️ មិនទាន់មានស្នើការជួសជុល</div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: COMPLETED LIST ===== -->
+  <div id="tab-t3" class="tab-content">
+    <div class="search-bar">
+      <input type="text" id="t3-search" placeholder="🔍 ស្វែងរក..." oninput="renderT3()">
+      <input type="month" id="t3-month" onchange="renderT3()" style="max-width:160px">
+      <button class="btn btn-warning" onclick="printSelectedRecords()" id="btn-print-selected" style="display:none">🖨 បោះពុម្ពដែលបានជ្រើស (<span id="sel-count">0</span>)</button>
+    </div>
+    <div class="rtbl-wrap">
+      <table class="rtbl">
+        <thead><tr>
+          <th style="width:36px"><input type="checkbox" id="t3-chk-all" onclick="toggleAllT3(this)" title="ជ្រើសទាំងអស់"></th>
+          <th>លេខ</th><th>ថ្ងៃស្នើរជួសជុល</th><th>ថ្ងៃជួសជុលរួច</th><th>ប្រភេទគ្រឿងចក្រ</th><th>លេខសម្គាល់</th>
+          <th>អ្នកស្នើ</th><th>គ្រឿង ($)</th><th>ជាង ($)</th><th>សរុបរួម ($)</th>
+          <th>សកម្មភាព</th>
+        </tr></thead>
+        <tbody id="t3-body"></tbody>
+      </table>
+      <div id="t3-empty" class="no-data" style="display:none">✅ មិនទាន់មានការជួសជុលរួច</div>
+    </div>
+    <div class="summary-bar" id="t3-summary" style="display:none">
+      <span>សរុបប័ណ្ណ: <span id="sum-count" style="color:var(--orange)">0</span></span>
+      <span>គ្រឿងបន្លាស់: <span id="sum-parts">$0.00</span></span>
+      <span>តម្លៃឈ្នួលជាង: <span id="sum-labor">$0.00</span></span>
+      <span>សរុបតម្លៃរួម: <span id="sum-total" style="color:var(--red);font-size:15px">$0.00</span></span>
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: MONTHLY REPORT ===== -->
+  <div id="tab-t4" class="tab-content">
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end">
+      <div class="fg" style="flex:1;min-width:130px">
+        <label>ឆ្នាំ</label>
+        <select id="t4-year" onchange="renderT4()" style="width:100%"></select>
+      </div>
+      <div class="fg" style="flex:1;min-width:130px">
+        <label>ខែ</label>
+        <select id="t4-month" onchange="renderT4()" style="width:100%">
+          <option value="">-- ខែទាំងអស់ --</option>
+          <option value="01">មករា</option><option value="02">កុម្ភៈ</option>
+          <option value="03">មីនា</option><option value="04">មេសា</option>
+          <option value="05">ឧសភា</option><option value="06">មិថុនា</option>
+          <option value="07">កក្កដា</option><option value="08">សីហា</option>
+          <option value="09">កញ្ញា</option><option value="10">តុលា</option>
+          <option value="11">វិច្ឆិកា</option><option value="12">ធ្នូ</option>
+        </select>
+      </div>
+      <div class="fg" style="flex:2;min-width:180px">
+        <label>ស្វែងរក (លេខសម្គាល់ / ប្រភេទ / អ្នកស្នើរ)</label>
+        <input type="text" id="t4-search" placeholder="🔍 ស្វែងរក..." oninput="renderT4()">
+      </div>
+      <button class="btn btn-warning" style="padding:8px 16px;align-self:flex-end" onclick="printT4()">🖨 បោះពុម្ព</button>
+    </div>
+    <div id="t4-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px"></div>
+    <div id="t4-monthly-wrap"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== WORK MODAL ===== -->
+<div class="modal-bg" id="work-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🔧 បញ្ចូលការងារជួសជុល — ប័ណ្ណ #<span id="wm-receipt"></span></h2>
+      <button class="modal-close" onclick="closeWorkModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="work-info-bar">
+        <div class="wi-item"><div class="lbl">ប្រភេទគ្រឿងចក្រ</div><div class="val" id="wm-type"></div></div>
+        <div class="wi-item"><div class="lbl">លេខសម្គាល់</div><div class="val" id="wm-code"></div></div>
+        <div class="wi-item"><div class="lbl">អ្នកស្នើរ</div><div class="val" id="wm-req"></div></div>
+        <div class="wi-item"><div class="lbl">ទីតាំង</div><div class="val" id="wm-loc"></div></div>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:16px">
+        <div class="fg"><label>ស្ថានភាព</label>
+          <select id="wm_status">
+            <option value="pending">រង់ចាំ</option>
+            <option value="progress">កំពុងដំណើរការ</option>
+            <option value="done">រួចរាល់</option>
+          </select>
+        </div>
+        <div class="fg"><label>ថ្ងៃចាប់ផ្តើម</label><input type="date" id="wm_start_date"></div>
+        <div class="fg"><label>ថ្ងៃជួសជុលរួច</label><input type="date" id="wm_done_date"></div>
+        <div class="fg full"><label>ចំណាំ / រាយការណ៍</label><textarea id="wm_report" rows="2" placeholder="ពណ៌នាការងារដែលបានធ្វើ..."></textarea></div>
+      </div>
+
+      <div class="tbl-hd"><span>គ្រឿងបម្លាស់ដែលបានផ្លាស់ប្ដូរ</span><button class="btn-add" onclick="addWPart()">+ បន្ថែម</button></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:36px">លរ</th>
+            <th style="text-align:left;width:40%">ឈ្មោះគ្រឿង</th>
+            <th>ចំនួន</th><th>តម្លៃ ($)</th><th>សរុប ($)</th>
+            <th style="width:32px"></th>
+          </tr></thead>
+          <tbody id="wm-parts-body"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="4" style="text-align:right;padding:7px 10px">សរុបតម្លៃគ្រឿង (១)</td>
+              <td style="text-align:right;padding:7px 10px" id="wm-parts-total">$0.00</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="tbl-hd"><span>ការងារដែលជាងបានធ្វើ</span><button class="btn-add" onclick="addWLabor()">+ បន្ថែម</button></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:36px">លរ</th>
+            <th style="text-align:left;width:36%">ឈ្មោះជាង</th>
+            <th>ម៉ោង</th><th>តម្លៃ/ម៉ោង ($)</th><th>សរុប ($)</th>
+            <th style="width:32px"></th>
+          </tr></thead>
+          <tbody id="wm-labor-body"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="4" style="text-align:right;padding:7px 10px">សរុបថ្លៃឈ្នួលជាង (២)</td>
+              <td style="text-align:right;padding:7px 10px" id="wm-labor-total">$0.00</td>
+              <td></td>
+            </tr>
+            <tr class="grand-row">
+              <td colspan="4" style="text-align:right;padding:7px 10px">តម្លៃសរុបរួម = (១)+(២)</td>
+              <td style="text-align:right;padding:7px 10px" id="wm-grand-total">$0.00</td>
+              <td style="background:var(--blue)"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Completion Signatures — pre-filled from request sigs -->
+      <div class="sec-title" style="margin-top:4px">ការអនុម័ត (ជួសជុលរួចរាល់)</div>
+      <div class="sig-outer">
+        <table>
+          <thead><tr>
+            <th style="width:70px"></th>
+            <th>ស្នើរការងារដោយ</th>
+            <th>ឯកភាពដោយ</th>
+            <th>ពិនិត្យ​ និងសម្រេចដោយ</th>
+            <th>បញ្ជាក់ការងារដោយ</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="sig-row-lbl">ឈ្មោះពេញ</td>
+              <td><input type="text" id="w_agent_req" placeholder="ឈ្មោះពេញ"></td>
+              <td><input type="text" id="w_agent_appr" placeholder="ឈ្មោះពេញ"></td>
+              <td><input type="text" id="w_agent_legal" placeholder="ឈ្មោះពេញ"></td>
+              <td><input type="text" id="w_agent_conf" placeholder="ឈ្មោះពេញ"></td>
+            </tr>
+            <tr>
+              <td class="sig-row-lbl">តួនាទី</td>
+              <td><input type="text" id="w_base_req" placeholder="តួនាទី"></td>
+              <td><input type="text" id="w_base_appr" placeholder="តួនាទី"></td>
+              <td><input type="text" id="w_base_legal" placeholder="តួនាទី"></td>
+              <td><input type="text" id="w_base_conf" placeholder="តួនាទី"></td>
+            </tr>
+            <tr>
+              <td class="sig-row-lbl">ហត្ថលេខា</td>
+              <td style="height:50px"><input type="text" id="w_sign_req"></td>
+              <td><input type="text" id="w_sign_appr"></td>
+              <td><input type="text" id="w_sign_legal"></td>
+              <td><input type="text" id="w_sign_conf"></td>
+            </tr>
+            <tr>
+              <td class="sig-row-lbl">ថ្ងៃខែឆ្នាំ</td>
+              <td><input type="date" id="w_date_req"></td>
+              <td><input type="date" id="w_date_appr"></td>
+              <td><input type="date" id="w_date_legal"></td>
+              <td><input type="date" id="w_date_conf"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-outline" onclick="closeWorkModal()">បោះបង់</button>
+        <button class="btn btn-warning" onclick="printWorkRecord()">🖨 បោះពុម្ព</button>
+        <button class="btn btn-success" onclick="saveWork()">💾 រក្សាទុក</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script src="app.js"></script>
+</body>
+</html>

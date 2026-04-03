@@ -1,0 +1,37 @@
+services:
+  # ── Backend (Flask API) ──────────────────────────────────────
+  - type: web
+    name: elythong-repair-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: DB_HOST
+        sync: false        # បំពេញពី Aiven Dashboard
+      - key: DB_PORT
+        sync: false        # Aiven ប្រើ port ផ្សេង (ជាធម្មតា 15000+)
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: elythong_repair
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+
+  # ── Frontend (Static Site) ───────────────────────────────────
+  - type: web
+    name: elythong-repair-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: ""
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
