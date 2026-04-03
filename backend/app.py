@@ -11,16 +11,14 @@ CORS(app)
 # SSL=True required for Aiven MySQL (cloud hosting)
 
 DB_CONFIG = {
-    'host':     os.environ.get('DB_HOST', 'localhost'),
-    'port':     int(os.environ.get('DB_PORT', 3306)),
-    'user':     os.environ.get('DB_USER', 'root'),
-    'password': os.environ.get('DB_PASSWORD', ''),
-    'database': os.environ.get('DB_NAME', 'elythong_repair'),
-    'charset':  'utf8mb4',
+    'host':        os.environ.get('DB_HOST', 'localhost'),
+    'port':        int(os.environ.get('DB_PORT', 3306)),
+    'user':        os.environ.get('DB_USER', 'root'),
+    'password':    os.environ.get('DB_PASSWORD', ''),
+    'database':    os.environ.get('DB_NAME', 'elythong_repair'),
+    'charset':     'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor,
-    'ssl': {'ssl_disabled': False},
-    'ssl_verify_cert': False,
-    'ssl_verify_identity': False,
+    'ssl_disabled': True,
 }
 
 def get_db():
