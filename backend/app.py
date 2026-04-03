@@ -19,7 +19,9 @@ DB_CONFIG = {
     'database': os.environ.get('DB_NAME', 'elythong_repair'),
     'charset':  'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor,
-    **({'ssl': {'ca': '/etc/ssl/certs/ca-certificates.crt'}} if _use_ssl else {})
+    'ssl': {'ssl_disabled': False},
+    'ssl_verify_cert': False,
+    'ssl_verify_identity': False,
 }
 
 def get_db():
