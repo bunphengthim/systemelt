@@ -9,7 +9,6 @@ CORS(app)
 
 # ── MySQL Config ──────────────────────────────────────────────
 # SSL=True required for Aiven MySQL (cloud hosting)
-_use_ssl = os.environ.get('DB_HOST', 'localhost') != 'localhost'
 
 DB_CONFIG = {
     'host':     os.environ.get('DB_HOST', 'localhost'),
