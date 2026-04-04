@@ -1,6 +1,6 @@
 // 🔧 សម្រាប់ Render: ប្តូរ URL នេះទៅ Backend URL របស់អ្នក
 // ឧទាហរណ៍: const BACKEND_URL = 'https://elythong-repair-api.onrender.com';
-const BACKEND_URL = 'https://elythong-repair-api.onrender.com';  // ទទេ = ប្រើ same server (local), ឬបំពេញ Render URL
+const BACKEND_URL = 'https://systemelt.onrender.com';  // ទទេ = ប្រើ same server (local), ឬបំពេញ Render URL
 const API = (BACKEND_URL || window.location.origin) + '/api';
 let records = [];
 let editingId = -1, workingId = -1;
