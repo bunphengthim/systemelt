@@ -133,6 +133,16 @@ def delete_request(rid):
 
     return jsonify({'ok': True})
 
+def get_db():
+    try:
+        pwd = os.environ.get('DB_PASSWORD', '')
+        print(f"🔑 DB_PASSWORD length: {len(pwd)}, first3: {pwd[:3]}")
+        conn = pymysql.connect(connect_timeout=10, **DB_CONFIG)
+        return conn
+    except Exception as e:
+        print("❌ DB Connection Error:", e)
+        raise
+
 
 # ── INIT DB ON START ──────────────────────────────────────────
 with app.app_context():
