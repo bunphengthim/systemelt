@@ -45,7 +45,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS repair_requests (
     description  TEXT,
     req_date     VARCHAR(20),
     note         TEXT,
-    status       ENUM("pending","progress","done") DEFAULT "pending",
+    status       ENUM('pending','progress','done') DEFAULT 'pending',
     start_date   VARCHAR(20),
     done_date    VARCHAR(20),
     report       TEXT,
@@ -59,7 +59,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS repair_requests (
 cur.execute('''CREATE TABLE IF NOT EXISTS request_signatures (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     request_id  INT NOT NULL,
-    sig_type    ENUM("request","completion") NOT NULL,
+    sig_type    ENUM('request','completion') NOT NULL,
     agent_req   VARCHAR(100), agent_appr  VARCHAR(100),
     agent_legal VARCHAR(100), agent_conf  VARCHAR(100),
     base_req    VARCHAR(100), base_appr   VARCHAR(100),
