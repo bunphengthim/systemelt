@@ -19,9 +19,9 @@ SQLITE_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'elythong_r
 
 # ── Connect & create DB ──────────────────────────
 conn = pymysql.connect(
-    host='localhost',
-    port=3306,
-    user='root',
+    host="mysql-25ee43b3-system.a.aivencloud.com",
+    port=25581,
+    user="avnadmin",
     password='',
     charset='utf8mb4',
     connect_timeout=5   # 🔥 important
