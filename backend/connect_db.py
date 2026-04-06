@@ -1,15 +1,15 @@
-import mysql.connector
-conn = mysql.connector.connect(
-    host="localhost",
-    port=3306,
-    user="root",
+import pymysql
+conn = pymysql.connect(
+    host="mysql-25ee43b3-system.a.aivencloud.com",
+    port=25581,
+    user="avnadmin",
     password="",
     database="elythong_repair"
 )
 
 def get_connection():
     try:
-        conn = mysql.connector.connect(
+        conn = pymysql.connect(
             host="localhost",      # or your server IP
             user="root",           # your MySQL username
             password="",           # your MySQL password
@@ -17,7 +17,7 @@ def get_connection():
         )
         print("✅ Connected to MySQL")
         return conn
-    except mysql.connector.Error as err:
+    except pymysql.Error as err:
         print("❌ Error:", err)
         return None
 
