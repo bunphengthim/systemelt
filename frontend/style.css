@@ -100,3 +100,11 @@ tbody td input:focus{border-color:var(--blue-light);background:#fff;box-shadow:0
 .login-btn{width:100%;background:#1a4fa0;color:#fff;border:none;border-radius:7px;padding:11px;font-family:'Kantumruy Pro',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-top:4px}
 .login-btn:hover{opacity:.88}
 .login-btn:active{transform:scale(.98)}
+
+/* ── LOADING SPINNER ────────────────────────────────────────── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px;flex-shrink:0}
+.btn-spinner-dark{border-color:rgba(26,79,160,0.3);border-top-color:var(--blue)}
+.btn.loading{opacity:.75;cursor:not-allowed;pointer-events:none;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.login-btn.loading{opacity:.75;cursor:not-allowed;pointer-events:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.login-btn.loading .btn-spinner{width:15px;height:15px}

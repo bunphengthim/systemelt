@@ -29,6 +29,21 @@ async function apiDelete(path) {
   return r.json();
 }
 
+// ── Button Loading Helper ─────────────────────────────────────
+function setLoading(btn, loading, originalHTML) {
+  if (loading) {
+    btn._originalHTML = btn.innerHTML;
+    btn._originalDisabled = btn.disabled;
+    btn.innerHTML = `<span class="btn-spinner"></span>${btn.dataset.loadingText || 'កំពុងដំណើរការ...'}`;
+    btn.classList.add('loading');
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = originalHTML !== undefined ? originalHTML : btn._originalHTML;
+    btn.classList.remove('loading');
+    btn.disabled = btn._originalDisabled || false;
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────
 window.onload = async () => {
   document.getElementById('f_date').value = today();
@@ -79,7 +94,8 @@ async function genReceipt() {
 }
 
 // ── Save Request ──────────────────────────────────────────────
-async function saveRequest() {
+async function saveRequest(btnEl) {
+  const btn = btnEl || document.querySelector('.btn-success[onclick*="saveRequest"]');
   const d = {
     receipt: document.getElementById('receiptDisplay').textContent,
     date: val('f_date'), type: val('f_type'), code: val('f_code'),
@@ -90,6 +106,7 @@ async function saveRequest() {
     work_parts:[], work_labor:[]
   };
   if(!d.date||!d.type||!d.code||!d.requester){ alert('សូមបំពេញ: ថ្ងៃ, ប្រភេទ, លេខកូត, ឈ្មោះ'); return; }
+  if(btn) setLoading(btn, true);
   try {
     if(editingId >= 0) {
       await apiPut('/requests/'+editingId, d);
@@ -102,6 +119,7 @@ async function saveRequest() {
     await loadRecords();
     showTab('t2');
   } catch(e) { alert('❌ Error: ' + e.message); }
+  finally { if(btn) setLoading(btn, false); }
 }
 
 function collectSigs() {
@@ -152,49 +170,61 @@ function renderT2() {
       <td>${r.requester||'—'}</td><td>${r.phone||'—'}</td><td>${r.location||'—'}</td>
       <td><span class="badge ${cls}">${lbl}</span></td>
       <td><div style="display:flex;gap:3px;flex-wrap:wrap">
-        <button class="btn btn-outline" style="padding:3px 7px;font-size:14px" onclick="editRequest(${r.id})">✏️ កែ</button>
-        <button class="btn btn-primary" style="padding:3px 7px;font-size:14px;background:#1565c0" onclick="openWorkModal(${r.id})">🔧 ជួសជុល</button>
-        <button class="btn btn-warning" style="padding:3px 7px;font-size:14px" onclick="printReq(${r.id})">🖨</button>
-        <button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id})">🗑</button>
+        <button class="btn btn-outline" style="padding:3px 7px;font-size:14px" onclick="editRequest(${r.id},this)">✏️ កែ</button>
+        <button class="btn btn-primary" style="padding:3px 7px;font-size:14px;background:#1565c0" onclick="openWorkModal(${r.id},this)">🔧 ជួសជុល</button>
+        <button class="btn btn-warning" style="padding:3px 7px;font-size:14px" onclick="printReq(${r.id},this)">🖨</button>
+        <button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id},this)">🗑</button>
       </div></td>`;
     tbody.appendChild(tr);
   });
 }
 
-async function editRequest(id) {
-  const r = await apiGet('/requests/'+id);
-  editingId = id;
-  document.getElementById('receiptDisplay').textContent=r.receipt;
-  document.getElementById('hdrNum').textContent='លេខ: '+r.receipt;
-  document.getElementById('f_date').value=r.date||'';
-  document.getElementById('f_type').value=r.machine_type||'';
-  document.getElementById('f_code').value=r.machine_code||'';
-  document.getElementById('f_requester').value=r.requester||'';
-  document.getElementById('f_phone').value=r.phone||'';
-  document.getElementById('f_location').value=r.location||'';
-  document.getElementById('f_desc').value=r.description||'';
-  document.getElementById('f_req_date').value=r.req_date||'';
-  document.getElementById('f_note').value=r.note||'';
-  const s=r.sigs||{};
-  ['agent_req','agent_appr','agent_legal','agent_conf',
-   'base_req','base_appr','base_legal','base_conf',
-   'sign_req','sign_appr','sign_legal','sign_conf','date_req','date_appr'].forEach(k=>{
-    const e=document.getElementById('s_'+k); if(e) e.value=s[k]||'';
-  });
-  showTab('t1');
+async function editRequest(id, btnEl) {
+  if(btnEl) setLoading(btnEl, true);
+  try {
+    const r = await apiGet('/requests/'+id);
+    editingId = id;
+    document.getElementById('receiptDisplay').textContent=r.receipt;
+    document.getElementById('hdrNum').textContent='លេខ: '+r.receipt;
+    document.getElementById('f_date').value=r.date||'';
+    document.getElementById('f_type').value=r.machine_type||'';
+    document.getElementById('f_code').value=r.machine_code||'';
+    document.getElementById('f_requester').value=r.requester||'';
+    document.getElementById('f_phone').value=r.phone||'';
+    document.getElementById('f_location').value=r.location||'';
+    document.getElementById('f_desc').value=r.description||'';
+    document.getElementById('f_req_date').value=r.req_date||'';
+    document.getElementById('f_note').value=r.note||'';
+    const s=r.sigs||{};
+    ['agent_req','agent_appr','agent_legal','agent_conf',
+     'base_req','base_appr','base_legal','base_conf',
+     'sign_req','sign_appr','sign_legal','sign_conf','date_req','date_appr'].forEach(k=>{
+      const e=document.getElementById('s_'+k); if(e) e.value=s[k]||'';
+    });
+    showTab('t1');
+  } finally {
+    if(btnEl) setLoading(btnEl, false);
+  }
 }
 
-async function deleteRec(id) {
+async function deleteRec(id, btnEl) {
   const r = records.find(x=>x.id===id);
   if(confirm('លុបប័ណ្ណ #'+(r?r.receipt:id)+'?')){
-    await apiDelete('/requests/'+id);
-    await loadRecords();
-    renderT2(); renderT3();
+    if(btnEl) setLoading(btnEl, true);
+    try {
+      await apiDelete('/requests/'+id);
+      await loadRecords();
+      renderT2(); renderT3();
+    } finally {
+      if(btnEl) setLoading(btnEl, false);
+    }
   }
 }
 
 // ── WORK MODAL ────────────────────────────────────────────────
-async function openWorkModal(id) {
+async function openWorkModal(id, btnEl) {
+  if(btnEl) setLoading(btnEl, true);
+  try {
   const r = await apiGet('/requests/'+id);
   workingId = id;
   document.getElementById('wm-receipt').textContent=r.receipt;
@@ -238,6 +268,9 @@ async function openWorkModal(id) {
     const e=document.getElementById('w_'+k); if(e) e.value=ws[k]||today();
   });
   document.getElementById('work-modal').classList.add('open');
+  } finally {
+    if(btnEl) setLoading(btnEl, false);
+  }
 }
 
 function closeWorkModal() { document.getElementById('work-modal').classList.remove('open'); workingId=-1; }
@@ -281,8 +314,9 @@ function calcWM() {
   document.getElementById('wm-grand-total').textContent=usd(pt+lt);
 }
 
-async function saveWork() {
+async function saveWork(btnEl) {
   if(workingId<0) return;
+  if(btnEl) setLoading(btnEl, true);
   const parts=wParts.filter(Boolean).map(p=>({name:p.name,qty:p.qty,price:p.price}));
   const labor=wLabor.filter(Boolean).map(l=>({name:l.name,hours:l.hours,rate:l.rate}));
   const status=document.getElementById('wm_status').value;
@@ -297,17 +331,21 @@ async function saveWork() {
     date_legal:val('w_date_legal'), date_conf:val('w_date_conf')
   };
   const r = records.find(x=>x.id===workingId)||{};
-  await apiPut('/requests/'+workingId, {
-    date:r.date, type:r.machine_type, code:r.machine_code,
-    requester:r.requester, phone:r.phone, location:r.location,
-    desc:r.description, req_date:r.req_date, note:r.note,
-    status, start_date:val('wm_start_date'), done_date:val('wm_done_date'),
-    report:val('wm_report'), work_parts:parts, work_labor:labor, work_sigs
-  });
-  await loadRecords();
-  closeWorkModal();
-  alert('✅ '+(status==='done'?'រួចរាល់ ✅':'បានរក្សាទុក')+' — ប័ណ្ណ #'+r.receipt);
-  if(status==='done') showTab('t3'); else renderT2();
+  try {
+    await apiPut('/requests/'+workingId, {
+      date:r.date, type:r.machine_type, code:r.machine_code,
+      requester:r.requester, phone:r.phone, location:r.location,
+      desc:r.description, req_date:r.req_date, note:r.note,
+      status, start_date:val('wm_start_date'), done_date:val('wm_done_date'),
+      report:val('wm_report'), work_parts:parts, work_labor:labor, work_sigs
+    });
+    await loadRecords();
+    closeWorkModal();
+    alert('✅ '+(status==='done'?'រួចរាល់ ✅':'បានរក្សាទុក')+' — ប័ណ្ណ #'+r.receipt);
+    if(status==='done') showTab('t3'); else renderT2();
+  } finally {
+    if(btnEl) setLoading(btnEl, false);
+  }
 }
 
 // ── TAB 3 ────────────────────────────────────────────────────
@@ -334,9 +372,9 @@ function renderT3() {
       <td style="text-align:right">${usd(r.labor_total)}</td>
       <td style="text-align:right;font-weight:700;color:var(--blue)">${usd(r.grand_total)}</td>
       <td><div style="display:flex;gap:3px;flex-wrap:wrap">
-        <button class="btn btn-primary" style="padding:3px 7px;font-size:14px" onclick="openWorkModal(${r.id})">🔧 កែ</button>
-        <button class="btn btn-warning" style="padding:3px 7px;font-size:14px" onclick="printFullRecord(${r.id})">🖨</button>
-        <button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id})">🗑</button>
+        <button class="btn btn-primary" style="padding:3px 7px;font-size:14px" onclick="openWorkModal(${r.id},this)">🔧 កែ</button>
+        <button class="btn btn-warning" style="padding:3px 7px;font-size:14px" onclick="printFullRecord(${r.id},this)">🖨</button>
+        <button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id},this)">🗑</button>
       </div></td>`;
     tbody.appendChild(tr);
   });
@@ -351,25 +389,43 @@ function renderT3() {
 }
 
 // ── PRINT ────────────────────────────────────────────────────
-async function printCurrentForm() {
-  const r={
-    receipt:val('receiptDisplay')||document.getElementById('receiptDisplay').textContent,
-    date:val('f_date'), machine_type:val('f_type'), machine_code:val('f_code'),
-    requester:val('f_requester'), phone:val('f_phone'), location:val('f_location'),
-    description:val('f_desc'), req_date:val('f_req_date'), note:val('f_note'),
-    status:'pending', sigs:collectSigs(), work_parts:[], work_labor:[],
-    parts_total:0, labor_total:0, grand_total:0
-  };
-  openPrintWin(r,'request');
+async function printCurrentForm(btnEl) {
+  if(btnEl) setLoading(btnEl, true);
+  try {
+    const r={
+      receipt:val('receiptDisplay')||document.getElementById('receiptDisplay').textContent,
+      date:val('f_date'), machine_type:val('f_type'), machine_code:val('f_code'),
+      requester:val('f_requester'), phone:val('f_phone'), location:val('f_location'),
+      description:val('f_desc'), req_date:val('f_req_date'), note:val('f_note'),
+      status:'pending', sigs:collectSigs(), work_parts:[], work_labor:[],
+      parts_total:0, labor_total:0, grand_total:0
+    };
+    openPrintWin(r,'request');
+  } finally {
+    if(btnEl) setTimeout(()=>setLoading(btnEl, false), 500);
+  }
 }
-async function printReq(id){ const r=await apiGet('/requests/'+id); openPrintWin(r,'request'); }
-async function printFullRecord(id){ const r=await apiGet('/requests/'+id); openPrintWin(r,'full'); }
-async function printWorkRecord(){
+async function printReq(id, btnEl){
+  if(btnEl) setLoading(btnEl, true);
+  try { const r=await apiGet('/requests/'+id); openPrintWin(r,'request'); }
+  finally { if(btnEl) setLoading(btnEl, false); }
+}
+async function printFullRecord(id, btnEl){
+  if(btnEl) setLoading(btnEl, true);
+  try { const r=await apiGet('/requests/'+id); openPrintWin(r,'full'); }
+  finally { if(btnEl) setLoading(btnEl, false); }
+}
+async function printWorkRecord(btnEl){
   if(workingId<0) return;
-  const r=await apiGet('/requests/'+workingId);
-  const parts=wParts.filter(Boolean).map(p=>{const s=(parseFloat(p.qty)||0)*(parseFloat(p.price)||0);return{part_name:p.name,quantity:p.qty,unit_price:p.price,sub_total:s};});
-  const labor=wLabor.filter(Boolean).map(l=>{const s=(parseFloat(l.hours)||0)*(parseFloat(l.rate)||0);return{worker_name:l.name,hours:l.hours,hourly_rate:l.rate,sub_total:s};});
-  openPrintWin({...r,work_parts:parts,work_labor:labor},'full');
+  if(btnEl) setLoading(btnEl, true);
+  try {
+    const r=await apiGet('/requests/'+workingId);
+    const parts=wParts.filter(Boolean).map(p=>{const s=(parseFloat(p.qty)||0)*(parseFloat(p.price)||0);return{part_name:p.name,quantity:p.qty,unit_price:p.price,sub_total:s};});
+    const labor=wLabor.filter(Boolean).map(l=>{const s=(parseFloat(l.hours)||0)*(parseFloat(l.rate)||0);return{worker_name:l.name,hours:l.hours,hourly_rate:l.rate,sub_total:s};});
+    openPrintWin({...r,work_parts:parts,work_labor:labor},'full');
+  } finally {
+    if(btnEl) setLoading(btnEl, false);
+  }
 }
 
 function sigTable(title, s, isRequest) {
@@ -485,11 +541,16 @@ function updateSelCount() {
   const allChk=document.getElementById('t3-chk-all');
   if(allChk) allChk.checked=all.length>0&&n===all.length;
 }
-async function printSelectedRecords() {
+async function printSelectedRecords(btnEl) {
   const ids=[...document.querySelectorAll('.t3-chk:checked')].map(c=>parseInt(c.value));
   if(!ids.length) return;
-  const recs=await Promise.all(ids.map(id=>apiGet('/requests/'+id)));
-  openMultiPrintWin(recs);
+  if(btnEl) setLoading(btnEl, true);
+  try {
+    const recs=await Promise.all(ids.map(id=>apiGet('/requests/'+id)));
+    openMultiPrintWin(recs);
+  } finally {
+    if(btnEl) setLoading(btnEl, false);
+  }
 }
 function openMultiPrintWin(recs) {
   const pages=recs.map(r=>{
@@ -644,14 +705,19 @@ function printT4() {
 // ── LOGIN ──────────────────────────────────────────────────────
 const CREDENTIALS = { username: 'AdminPheng', password: '168' };
 
-function doLogin() {
+function doLogin(btnEl) {
+  const btn = btnEl || document.querySelector('.login-btn');
   const u = document.getElementById('lg-user').value.trim();
   const p = document.getElementById('lg-pass').value;
   const err = document.getElementById('lg-err');
   if (u === CREDENTIALS.username && p === CREDENTIALS.password) {
-    document.getElementById('login-screen').classList.add('hidden');
-    sessionStorage.setItem('elythong_auth', '1');
-    err.textContent = '';
+    if(btn) setLoading(btn, true);
+    setTimeout(() => {
+      document.getElementById('login-screen').classList.add('hidden');
+      sessionStorage.setItem('elythong_auth', '1');
+      err.textContent = '';
+      if(btn) setLoading(btn, false);
+    }, 400);
   } else {
     err.textContent = '❌ Username ឬ Password មិនត្រឹមត្រូវ!';
     document.getElementById('lg-pass').value = '';
@@ -667,4 +733,3 @@ function doLogin() {
     setTimeout(() => document.getElementById('lg-user').focus(), 100);
   }
 })();
-

@@ -22,7 +22,7 @@
       <input type="password" id="lg-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
     <div class="login-err" id="lg-err"></div>
-    <button class="login-btn" onclick="doLogin()">🔐 ចូលប្រើប្រាស់</button>
+    <button class="login-btn" onclick="doLogin(this)">🔐 ចូលប្រើប្រាស់</button>
   </div>
 </div>
 
@@ -105,8 +105,8 @@
     </div>
     <div class="action-bar">
       <button class="btn btn-outline" onclick="clearForm()">🗑 លុបទម្រង់</button>
-      <button class="btn btn-warning" onclick="printCurrentForm()">🖨 បោះពុម្ព</button>
-      <button class="btn btn-success" onclick="saveRequest()">💾 បញ្ជូនស្នើរ</button>
+      <button class="btn btn-warning" onclick="printCurrentForm(this)">🖨 បោះពុម្ព</button>
+      <button class="btn btn-success" onclick="saveRequest(this)">💾 បញ្ជូនស្នើរ</button>
     </div>
   </div>
 
@@ -139,7 +139,7 @@
     <div class="search-bar">
       <input type="text" id="t3-search" placeholder="🔍 ស្វែងរក..." oninput="renderT3()">
       <input type="month" id="t3-month" onchange="renderT3()" style="max-width:160px">
-      <button class="btn btn-warning" onclick="printSelectedRecords()" id="btn-print-selected" style="display:none">🖨 បោះពុម្ពដែលបានជ្រើស (<span id="sel-count">0</span>)</button>
+      <button class="btn btn-warning" onclick="printSelectedRecords(this)" id="btn-print-selected" style="display:none">🖨 បោះពុម្ពដែលបានជ្រើស (<span id="sel-count">0</span>)</button>
     </div>
     <div class="rtbl-wrap">
       <table class="rtbl">
@@ -310,8 +310,8 @@
       </div>
       <div class="action-bar">
         <button class="btn btn-outline" onclick="closeWorkModal()">បោះបង់</button>
-        <button class="btn btn-warning" onclick="printWorkRecord()">🖨 បោះពុម្ព</button>
-        <button class="btn btn-success" onclick="saveWork()">💾 រក្សាទុក</button>
+        <button class="btn btn-warning" onclick="printWorkRecord(this)">🖨 បោះពុម្ព</button>
+        <button class="btn btn-success" onclick="saveWork(this)">💾 រក្សាទុក</button>
       </div>
     </div>
   </div>
