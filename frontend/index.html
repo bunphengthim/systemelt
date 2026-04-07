@@ -216,7 +216,7 @@
             <option value="done">រួចរាល់</option>
           </select>
         </div>
-        <div class="fg"><label>ថ្ងៃចាប់ផ្តើម</label><input type="date" id="wm_start_date"></div>
+        <div class="fg"><label>ថ្ងៃចាប់ផ្តើម</label><input type="date" id="wm_start_date" oninput="syncWorkDates(this.value)"></div>
         <div class="fg"><label>ថ្ងៃជួសជុលរួច</label><input type="date" id="wm_done_date"></div>
         <div class="fg full"><label>ចំណាំ / រាយការណ៍</label><textarea id="wm_report" rows="2" placeholder="ពណ៌នាការងារដែលបានធ្វើ..."></textarea></div>
       </div>
@@ -301,8 +301,8 @@
             </tr>
             <tr>
               <td class="sig-row-lbl">ថ្ងៃខែឆ្នាំ</td>
-              <td><input type="date" id="w_date_req"></td>
-              <td><input type="date" id="w_date_appr"></td>
+              <td><input type="date" id="w_date_req" oninput="syncWorkDates(this.value)"></td>
+              <td><input type="date" id="w_date_appr" oninput="syncWorkDates(this.value)"></td>
               <td><input type="date" id="w_date_legal"></td>
               <td><input type="date" id="w_date_conf"></td>
             </tr>

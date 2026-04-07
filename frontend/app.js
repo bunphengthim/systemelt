@@ -8,9 +8,16 @@ let wParts = [], wLabor = [];
 
 const today = () => new Date().toISOString().split('T')[0];
 
-// Sync all 3 date fields in Tab 1 together
+// Sync all date fields in Tab 1 together
 function syncDates(v) {
   ['f_date','f_req_date','s_date_req','s_date_appr'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.value=v;
+  });
+}
+
+// Sync work modal: ថ្ងៃចាប់ផ្តើម = ស្នើរការងារដោយថ្ងៃខែឆ្នាំ = ឯកភាពដោយថ្ងៃខែឆ្នាំ
+function syncWorkDates(v) {
+  ['wm_start_date','w_date_req','w_date_appr'].forEach(id=>{
     const e=document.getElementById(id); if(e) e.value=v;
   });
 }
