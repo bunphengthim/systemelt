@@ -724,8 +724,8 @@ function printT4() {
 }
 
 // ── LOGIN ──────────────────────────────────────────────────────
-const CREDENTIALS       = { username: 'AdminPheng',  password: '168' };
-const CREDENTIALS_VIEW  = { username: 'ViewerPheng', password: '168view' };
+const CREDENTIALS       = { username: 'Admin',  password: '385940' };
+const CREDENTIALS_VIEW  = { username: 'CEO', password: '168' };
 let isViewer = false;
 
 let _loginRoleSelected = 'admin';
