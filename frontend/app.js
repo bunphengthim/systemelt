@@ -257,7 +257,7 @@ async function openWorkModal(id, btnEl) {
   document.getElementById('wm_status').value=r.status||'pending';
   document.getElementById('wm_start_date').value=r.start_date||today();
   document.getElementById('wm_done_date').value=r.done_date||'';
-  document.getElementById('wm_report').value=r.report||'';
+  document.getElementById('wm_report').value=r.report||r.description||'';
   wParts=[]; wLabor=[];
   document.getElementById('wm-parts-body').innerHTML='';
   document.getElementById('wm-labor-body').innerHTML='';
