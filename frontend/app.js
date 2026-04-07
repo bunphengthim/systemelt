@@ -7,6 +7,13 @@ let editingId = -1, workingId = -1;
 let wParts = [], wLabor = [];
 
 const today = () => new Date().toISOString().split('T')[0];
+
+// Sync all 3 date fields in Tab 1 together
+function syncDates(v) {
+  ['f_date','f_req_date','s_date_req','s_date_appr'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.value=v;
+  });
+}
 const usd = v => '$' + (parseFloat(v)||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 const fmtD = d => d ? d.split('-').reverse().join('-') : '—';
 const val = id => { const e=document.getElementById(id); return e?e.value:''; };

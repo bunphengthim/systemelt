@@ -52,7 +52,7 @@
     </div>
     <div class="sec-title">ព័ត៌មានទូទៅ</div>
     <div class="form-grid">
-      <div class="fg"><label>ថ្ងៃខែឆ្នាំ</label><input type="date" id="f_date"></div>
+      <div class="fg"><label>ថ្ងៃខែឆ្នាំ</label><input type="date" id="f_date" oninput="syncDates(this.value)"></div>
       <div class="fg"><label>ប្រភេទគ្រឿងចក្រ</label>
         <input type="text" id="f_type" placeholder="ឧ.​ VOLVO SDLG KOBELCO ....">
       </div>
@@ -61,7 +61,7 @@
       <div class="fg"><label>លេខទូរស័ព្ទ</label><input type="tel" id="f_phone" placeholder="0xx-xxx-xxx"></div>
       <div class="fg"><label>ទីតាំងការងារ</label><input type="text" id="f_location" placeholder="ឧ. ស្ពានទី៨..."></div>
       <div class="fg full"><label>ការពិពណ៌នាបញ្ហា</label><textarea id="f_desc" rows="2" placeholder="ពណ៌នា បញ្ហា ឬ ការខូចខាត..."></textarea></div>
-      <div class="fg"><label>ថ្ងៃស្នើរជួសជុល</label><input type="date" id="f_req_date"></div>
+      <div class="fg"><label>ថ្ងៃស្នើរជួសជុល</label><input type="date" id="f_req_date" oninput="syncDates(this.value)"></div>
       <div class="fg"><label>ចំណាំ</label><input type="text" id="f_note" placeholder="..."></div>
     </div>
     <div class="sec-title">ការអនុម័ត</div>
@@ -96,8 +96,8 @@
           </tr>
           <tr>
             <td class="sig-row-lbl">ថ្ងៃខែឆ្នាំ</td>
-            <td><input type="date" id="s_date_req"></td>
-            <td><input type="date" id="s_date_appr"></td>
+            <td><input type="date" id="s_date_req" oninput="syncDates(this.value)"></td>
+            <td><input type="date" id="s_date_appr" oninput="syncDates(this.value)"></td>
             <td></td>
             <td></td>
           </tr>
