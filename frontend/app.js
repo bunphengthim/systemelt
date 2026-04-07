@@ -724,28 +724,9 @@ function printT4() {
 }
 
 // ── LOGIN ──────────────────────────────────────────────────────
-const CREDENTIALS       = { username: 'Admin',  password: '385940' };
-const CREDENTIALS_VIEW  = { username: 'CEO', password: '168' };
+const CREDENTIALS       = { username: 'AdminPheng',  password: '168' };
+const CREDENTIALS_VIEW  = { username: 'ViewerPheng', password: '168view' };
 let isViewer = false;
-
-let _loginRoleSelected = 'admin';
-function selectLoginRole(role) {
-  _loginRoleSelected = role;
-  const adminTab  = document.getElementById('role-admin-tab');
-  const viewerTab = document.getElementById('role-viewer-tab');
-  if(role === 'admin') {
-    adminTab.style.background  = '#1a4fa0'; adminTab.style.color = '#fff'; adminTab.style.borderColor = '#1a4fa0';
-    viewerTab.style.background = '#fff';    viewerTab.style.color = '#1a4fa0'; viewerTab.style.borderColor = '#b8cde8';
-  } else {
-    viewerTab.style.background = '#e07b2a'; viewerTab.style.color = '#fff'; viewerTab.style.borderColor = '#e07b2a';
-    adminTab.style.background  = '#fff';    adminTab.style.color = '#1a4fa0'; adminTab.style.borderColor = '#b8cde8';
-  }
-  document.getElementById('lg-user').value = '';
-  document.getElementById('lg-pass').value = '';
-  document.getElementById('lg-err').textContent = '';
-  document.getElementById('lg-user').focus();
-}
-
 
 function doLogin(btnEl) {
   const btn = btnEl || document.querySelector('.login-btn');
