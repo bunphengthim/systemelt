@@ -747,13 +747,14 @@ function selectLoginRole(role) {
 }
 
 
+function doLogin(btnEl) {
   const btn = btnEl || document.querySelector('.login-btn');
   const u = document.getElementById('lg-user').value.trim();
   const p = document.getElementById('lg-pass').value;
   const err = document.getElementById('lg-err');
 
-  const isAdmin  = (u === CREDENTIALS.username      && p === CREDENTIALS.password);
-  const isView   = (u === CREDENTIALS_VIEW.username  && p === CREDENTIALS_VIEW.password);
+  const isAdmin = (u === CREDENTIALS.username     && p === CREDENTIALS.password);
+  const isView  = (u === CREDENTIALS_VIEW.username && p === CREDENTIALS_VIEW.password);
 
   if (isAdmin || isView) {
     if(btn) setLoading(btn, true);
@@ -770,7 +771,7 @@ function selectLoginRole(role) {
     document.getElementById('lg-pass').value = '';
     document.getElementById('lg-pass').focus();
   }
-
+}
 
 // Apply viewer-only restrictions to UI
 function applyViewerMode() {
