@@ -52,6 +52,8 @@ window.onload = async () => {
   document.getElementById('s_date_appr').value = today();
   await loadRecords();
   await genReceipt();
+  // If viewer session was restored before onload, re-apply mode now that data is ready
+  if (isViewer) applyViewerMode();
 };
 
 async function loadRecords() {
@@ -65,8 +67,11 @@ async function loadRecords() {
 
 function showTab(name) {
   ['t1','t2','t3','t4'].forEach(t => {
-    document.getElementById('tab-'+t).classList.toggle('active', t===name);
-    document.querySelectorAll('.tab-btn')[['t1','t2','t3','t4'].indexOf(t)].classList.toggle('active', t===name);
+    const tabEl = document.getElementById('tab-'+t);
+    if(tabEl) tabEl.classList.toggle('active', t===name);
+    // find the matching tab button by its onclick content
+    const btn = document.querySelector(`.tab-btn[onclick*="'${t}'"]`);
+    if(btn) btn.classList.toggle('active', t===name);
   });
   if(name==='t2') renderT2();
   if(name==='t3') renderT3();
@@ -95,6 +100,7 @@ async function genReceipt() {
 
 // ── Save Request ──────────────────────────────────────────────
 async function saveRequest(btnEl) {
+  if(isViewer){ alert('⛔ អ្នកមានសិទ្ធិមើលតែ មិនអាចបញ្ចូលទិន្នន័យបានទេ!'); return; }
   const btn = btnEl || document.querySelector('.btn-success[onclick*="saveRequest"]');
   const d = {
     receipt: document.getElementById('receiptDisplay').textContent,
@@ -170,16 +176,17 @@ function renderT2() {
       <td>${r.requester||'—'}</td><td>${r.phone||'—'}</td><td>${r.location||'—'}</td>
       <td><span class="badge ${cls}">${lbl}</span></td>
       <td><div style="display:flex;gap:3px;flex-wrap:wrap">
-        <button class="btn btn-outline" style="padding:3px 7px;font-size:14px" onclick="editRequest(${r.id},this)">✏️ កែ</button>
-        <button class="btn btn-primary" style="padding:3px 7px;font-size:14px;background:#1565c0" onclick="openWorkModal(${r.id},this)">🔧 ជួសជុល</button>
+        ${isViewer ? '' : `<button class="btn btn-outline" style="padding:3px 7px;font-size:14px" onclick="editRequest(${r.id},this)">✏️ កែ</button>`}
+        ${isViewer ? '' : `<button class="btn btn-primary" style="padding:3px 7px;font-size:14px;background:#1565c0" onclick="openWorkModal(${r.id},this)">🔧 ជួសជុល</button>`}
         <button class="btn btn-warning" style="padding:3px 7px;font-size:14px" onclick="printReq(${r.id},this)">🖨</button>
-        <button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id},this)">🗑</button>
+        ${isViewer ? '' : `<button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id},this)">🗑</button>`}
       </div></td>`;
     tbody.appendChild(tr);
   });
 }
 
 async function editRequest(id, btnEl) {
+  if(isViewer){ alert('⛔ អ្នកមានសិទ្ធិមើលតែ មិនអាចកែបានទេ!'); return; }
   if(btnEl) setLoading(btnEl, true);
   try {
     const r = await apiGet('/requests/'+id);
@@ -208,6 +215,7 @@ async function editRequest(id, btnEl) {
 }
 
 async function deleteRec(id, btnEl) {
+  if(isViewer){ alert('⛔ អ្នកមានសិទ្ធិមើលតែ មិនអាចលុបបានទេ!'); return; }
   const r = records.find(x=>x.id===id);
   if(confirm('លុបប័ណ្ណ #'+(r?r.receipt:id)+'?')){
     if(btnEl) setLoading(btnEl, true);
@@ -268,6 +276,18 @@ async function openWorkModal(id, btnEl) {
     const e=document.getElementById('w_'+k); if(e) e.value=ws[k]||today();
   });
   document.getElementById('work-modal').classList.add('open');
+  // Viewer: hide save button inside modal
+  const modalSaveBtn = document.querySelector('#work-modal .btn-success');
+  const modalAddBtns = document.querySelectorAll('#work-modal .btn-add');
+  const modalDelBtns = document.querySelectorAll('#work-modal .btn-del');
+  if(modalSaveBtn) modalSaveBtn.style.display = isViewer ? 'none' : '';
+  modalAddBtns.forEach(b => b.style.display = isViewer ? 'none' : '');
+  modalDelBtns.forEach(b => b.style.display = isViewer ? 'none' : '');
+  // Viewer: disable all inputs inside modal
+  document.querySelectorAll('#work-modal input, #work-modal select, #work-modal textarea').forEach(el => {
+    el.disabled = isViewer;
+    if(isViewer) el.style.background = '#f5f5f5';
+  });
   } finally {
     if(btnEl) setLoading(btnEl, false);
   }
@@ -315,6 +335,7 @@ function calcWM() {
 }
 
 async function saveWork(btnEl) {
+  if(isViewer){ alert('⛔ អ្នកមានសិទ្ធិមើលតែ មិនអាចកែទិន្នន័យបានទេ!'); return; }
   if(workingId<0) return;
   if(btnEl) setLoading(btnEl, true);
   const parts=wParts.filter(Boolean).map(p=>({name:p.name,qty:p.qty,price:p.price}));
@@ -372,9 +393,9 @@ function renderT3() {
       <td style="text-align:right">${usd(r.labor_total)}</td>
       <td style="text-align:right;font-weight:700;color:var(--blue)">${usd(r.grand_total)}</td>
       <td><div style="display:flex;gap:3px;flex-wrap:wrap">
-        <button class="btn btn-primary" style="padding:3px 7px;font-size:14px" onclick="openWorkModal(${r.id},this)">🔧 កែ</button>
+        ${isViewer ? '' : `<button class="btn btn-primary" style="padding:3px 7px;font-size:14px" onclick="openWorkModal(${r.id},this)">🔧 កែ</button>`}
         <button class="btn btn-warning" style="padding:3px 7px;font-size:14px" onclick="printFullRecord(${r.id},this)">🖨</button>
-        <button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id},this)">🗑</button>
+        ${isViewer ? '' : `<button class="btn btn-danger" style="padding:3px 7px;font-size:14px" onclick="deleteRec(${r.id},this)">🗑</button>`}
       </div></td>`;
     tbody.appendChild(tr);
   });
@@ -703,19 +724,45 @@ function printT4() {
 }
 
 // ── LOGIN ──────────────────────────────────────────────────────
-const CREDENTIALS = { username: 'AdminPheng', password: '168' };
+const CREDENTIALS       = { username: 'AdminPheng',  password: '168' };
+const CREDENTIALS_VIEW  = { username: 'ViewerPheng', password: '168view' };
+let isViewer = false;
 
-function doLogin(btnEl) {
+let _loginRoleSelected = 'admin';
+function selectLoginRole(role) {
+  _loginRoleSelected = role;
+  const adminTab  = document.getElementById('role-admin-tab');
+  const viewerTab = document.getElementById('role-viewer-tab');
+  if(role === 'admin') {
+    adminTab.style.background  = '#1a4fa0'; adminTab.style.color = '#fff'; adminTab.style.borderColor = '#1a4fa0';
+    viewerTab.style.background = '#fff';    viewerTab.style.color = '#1a4fa0'; viewerTab.style.borderColor = '#b8cde8';
+  } else {
+    viewerTab.style.background = '#e07b2a'; viewerTab.style.color = '#fff'; viewerTab.style.borderColor = '#e07b2a';
+    adminTab.style.background  = '#fff';    adminTab.style.color = '#1a4fa0'; adminTab.style.borderColor = '#b8cde8';
+  }
+  document.getElementById('lg-user').value = '';
+  document.getElementById('lg-pass').value = '';
+  document.getElementById('lg-err').textContent = '';
+  document.getElementById('lg-user').focus();
+}
+
+
   const btn = btnEl || document.querySelector('.login-btn');
   const u = document.getElementById('lg-user').value.trim();
   const p = document.getElementById('lg-pass').value;
   const err = document.getElementById('lg-err');
-  if (u === CREDENTIALS.username && p === CREDENTIALS.password) {
+
+  const isAdmin  = (u === CREDENTIALS.username      && p === CREDENTIALS.password);
+  const isView   = (u === CREDENTIALS_VIEW.username  && p === CREDENTIALS_VIEW.password);
+
+  if (isAdmin || isView) {
     if(btn) setLoading(btn, true);
+    isViewer = isView;
     setTimeout(() => {
       document.getElementById('login-screen').classList.add('hidden');
-      sessionStorage.setItem('elythong_auth', '1');
+      sessionStorage.setItem('elythong_auth', isView ? 'viewer' : '1');
       err.textContent = '';
+      applyViewerMode();
       if(btn) setLoading(btn, false);
     }, 400);
   } else {
@@ -723,12 +770,37 @@ function doLogin(btnEl) {
     document.getElementById('lg-pass').value = '';
     document.getElementById('lg-pass').focus();
   }
+
+
+// Apply viewer-only restrictions to UI
+function applyViewerMode() {
+  if (!isViewer) return;
+  if (document.body.classList.contains('is-viewer')) return; // already applied
+  document.body.classList.add('is-viewer');
+  // Show viewer banner
+  const banner = document.querySelector('.viewer-banner');
+  if(banner) banner.style.display = 'block';
+  // Hide Tab 1 (form) entirely — viewers cannot submit new requests
+  const tab1Btn = document.querySelector(`.tab-btn[onclick*="'t1'"]`);
+  if(tab1Btn) tab1Btn.style.display = 'none';
+  // Add viewer badge to header
+  const badgeNum = document.getElementById('hdrNum');
+  if(badgeNum && !document.getElementById('viewer-badge')) {
+    badgeNum.insertAdjacentHTML('beforebegin', '<span id="viewer-badge" style="background:#e07b2a;color:#fff;border-radius:5px;padding:3px 10px;font-size:13px;font-weight:700">👁 មើលតែ</span>');
+  }
+  // Switch to tab 2
+  showTab('t2');
+  // Re-render tables to strip action buttons
+  renderT2(); renderT3();
 }
 
 // Check session on load
 (function() {
-  if (sessionStorage.getItem('elythong_auth') === '1') {
+  const auth = sessionStorage.getItem('elythong_auth');
+  if (auth === '1' || auth === 'viewer') {
+    isViewer = (auth === 'viewer');
     document.getElementById('login-screen').classList.add('hidden');
+    // applyViewerMode() is called at end of window.onload after data is ready
   } else {
     setTimeout(() => document.getElementById('lg-user').focus(), 100);
   }

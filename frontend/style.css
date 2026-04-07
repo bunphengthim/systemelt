@@ -101,6 +101,13 @@ tbody td input:focus{border-color:var(--blue-light);background:#fff;box-shadow:0
 .login-btn:hover{opacity:.88}
 .login-btn:active{transform:scale(.98)}
 
+/* ── VIEWER MODE ────────────────────────────────────────────── */
+.viewer-banner{display:none;background:#fff3cd;border:1.5px solid #f0c040;color:#856404;font-weight:700;font-size:14px;text-align:center;padding:6px 12px;border-radius:6px;margin-bottom:10px}
+body.is-viewer .viewer-banner{display:block}
+body.is-viewer input:not([type=checkbox]):not([type=date]):not([type=month]):not([type=text][readonly]),
+body.is-viewer select,
+body.is-viewer textarea{background:#f8f9fa!important;cursor:default}
+
 /* ── LOADING SPINNER ────────────────────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg)}}
 .btn-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px;flex-shrink:0}

@@ -13,6 +13,10 @@
   <div class="login-box">
     <div class="login-logo">ELYTHONG</div>
     <div class="login-sub">ប្រព័ន្ធតាមដានការជួសជុលគ្រឿងចក្រ</div>
+    <div style="display:flex;gap:8px;margin-bottom:18px;justify-content:center">
+      <span id="role-admin-tab" onclick="selectLoginRole('admin')" style="flex:1;text-align:center;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:#1a4fa0;color:#fff;border:2px solid #1a4fa0;transition:.2s">🔑 គ្រប់គ្រង</span>
+      <span id="role-viewer-tab" onclick="selectLoginRole('viewer')" style="flex:1;text-align:center;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;color:#1a4fa0;border:2px solid #b8cde8;transition:.2s">👁 មើលតែ</span>
+    </div>
     <div class="fg">
       <label>Username</label>
       <input type="text" id="lg-user" placeholder="Username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
@@ -35,6 +39,7 @@
 </div>
 
 <div class="main-wrap">
+  <div class="viewer-banner">👁 របៀបមើលតែ — អ្នកមិនអាចបញ្ចូល កែ ឬលុបទិន្នន័យបានទេ</div>
   <div class="tabs">
     <button class="tab-btn active" onclick="showTab('t1')">📋​ ប័ណ្ណស្នើរការជួសជុល</button>
     <button class="tab-btn" onclick="showTab('t2')">📂 ប័ណ្ណស្នើរកំពុងជួសជុល <span class="cnt" id="cnt-pending">0</span></button>
